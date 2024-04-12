@@ -2,6 +2,7 @@ package crm.controller;
 
 import crm.entity.Customer;
 import crm.service.CustomerService;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -28,10 +29,11 @@ public class CustomerController {
      * @return customer/list
      */
     @GetMapping("/list")
-    public String showAllCustomers(Model model,@RequestParam(value = "error",required = false) String err) {
+    public String showAllCustomers(@RequestParam(defaultValue = "") String name,Model model, @RequestParam(value = "error",required = false) String err, Pageable pageable) {
         model.addAttribute("err",err);
         model.addAttribute("customer",new Customer());
-        model.addAttribute("customers", customerService.listAllCustomers());
+        model.addAttribute("name",name);
+        model.addAttribute("customers", customerService.listAllCustomersWithPage(name,pageable));
         return "customer/list";
     }
 
@@ -64,7 +66,7 @@ public class CustomerController {
             return "redirect:/customer/list?error=error";
         } else {
             customerService.saveCustomer(customer);
-            return "customer/success";
+            return "redirect:/customer/list";
         }
     }
 
@@ -78,7 +80,7 @@ public class CustomerController {
      * @return customer/edit
      */
     @GetMapping("/edit/{id}")
-    public String showFormEditCustomer(Model model, @PathVariable Long id) {
+    public String showFormEditCustomer(Model model, @PathVariable Integer id) {
         model.addAttribute("customer", customerService.showCustomer(id));
         return "customer/edit";
     }
@@ -94,19 +96,26 @@ public class CustomerController {
      * @return redirect:/customer/list
      */
     @PostMapping("/edit/{id}")
-    public String processRequestEditCustomer(@PathVariable Long id, @Valid Customer customer,
+    public String processRequestEditCustomer(@PathVariable Integer id, @Valid Customer customer,
                                              BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "redirect:/customer/edit/" + id;
         } else {
+            customer.setId(id);
             customerService.saveCustomer(customer);
             return "redirect:/customer/list";
         }
     }
 
-    @GetMapping("/customer/change-status/{id}")
-    public String changeStatus(@PathVariable Long id){
+    @GetMapping("/change-status/{id}")
+    public String changeStatus(@PathVariable Integer id){
         customerService.changeStatus(id);
         return "redirect:/customer/list";
     }
+    @GetMapping("/details/{id}")
+    public String details(@PathVariable Integer id, Model model) {
+        model.addAttribute("customer",customerService.showCustomer(id));
+        return "customer/details";
+    }
+
 }

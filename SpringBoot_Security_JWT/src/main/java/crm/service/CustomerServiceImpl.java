@@ -2,8 +2,13 @@ package crm.service;
 
 import crm.entity.Customer;
 import crm.repository.CustomerRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
@@ -27,7 +32,13 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Customer showCustomer(Long id) {
+    public Page<Customer> listAllCustomersWithPage(String name,Pageable pageable) {
+        Pageable pageableCustom = PageRequest.of(pageable.getPageNumber(),10);
+        return customerRepository.findByFirstNameContainingOrLastNameContaining(name,name,pageableCustom);
+    }
+
+    @Override
+    public Customer showCustomer(Integer id) {
         return customerRepository.getById(id);
     }
 
@@ -87,7 +98,11 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public void saveCustomer(Customer customer) {
+        if (customer.getId()==null){
+            customer.setCreateAt(LocalDateTime.now());
+        }
         customer.setEnabled(1);
+        customer.setLastUpdate(LocalDateTime.now());
         customerRepository.save(customer);
     }
 //
@@ -103,9 +118,9 @@ public class CustomerServiceImpl implements CustomerService {
 //    }
 
     @Override
-    public void changeStatus(Long id) {
+    public void changeStatus(Integer id) {
         Customer customer = customerRepository.findById(id).orElseThrow(() -> new NoSuchElementException("ko ton tai"));
-        customer.setEnabled(customer.getEnabled()==1?1:0);
+        customer.setEnabled(customer.getEnabled()==1?0:1);
         customerRepository.save(customer);
     }
 }

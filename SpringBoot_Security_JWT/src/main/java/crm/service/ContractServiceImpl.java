@@ -102,6 +102,9 @@ public class ContractServiceImpl implements ContractService {
 
     @Override
     public void saveContract(Contract contract) {
+        if (contract.getId()==null){
+            contract.setStatus(Status.PROPOSED);
+        }
         contractRepository.save(contract);
     }
 

@@ -19,7 +19,7 @@
 <!--    <a th:href="@{/logout}">Log out</a>-->
 
 <!DOCTYPE html>
-<html lang="en" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 
 <head>
     <meta charset="utf-8">
@@ -46,7 +46,7 @@
 
 <body>
 <div class="wrapper">
-    <nav id="sidebar" class="sidebar js-sidebar">
+    <nav id="sidebar" class="sidebar js-sidebar" th:fragment="side-bar">
         <div class="sidebar-content js-simplebar">
             <a class="sidebar-brand" href="index.html">
                 <span class="align-middle">AdminKit</span>
@@ -87,7 +87,7 @@
                 <i class="hamburger align-self-center"></i>
             </a>
 
-            <div class="navbar-collapse collapse">
+            <div class="navbar-collapse collapse" th:fragment="navbar">
                 <ul class="navbar-nav navbar-align">
 
                     <li class="nav-item dropdown">
@@ -112,7 +112,7 @@
 
                             <div class="dropdown-divider"></div>
                             <form th:action="@{/logout}" method="post">
-                                <input type="submit" value="Log Out"/>
+                                <input class="btn btn-warning" type="submit" value="Log Out"/>
                             </form>
                         </div>
                     </li>

@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
@@ -32,36 +31,38 @@
             <div class="container-fluid px-5 pt-2" style="max-width: 50vw">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="text-xl-center fs-2 text-black">Register</h3>
+                        <h3 class="text-xl-center fs-2 text-black">Login</h3>
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body p-6">
-                        <form th:action="@{/register}" th:object="${user}" method="post">
-                            <input type="hidden" th:field="*{id}" />
+                        <form th:action="@{/register}" method="post" th:object="${user}">
                             <div class="mb-3">
-                                <label class="form-label">Username</label>
-                                <input type="text" class="form-control" th:field="*{username}">
-                                <p class="text-danger" th:if="${alreadyRegisteredMessage}" th:text="${alreadyRegisteredMessage}"></p>
+                                <label class="form-label"> Fullname</label>
+                                <input type="text" class="form-control" th:field="*{fullName}" required>
                             </div>
                             <div class="mb-3">
-                                <label  class="form-label">Password</label>
-                                <input type="password" class="form-control" th:field="*{password}">
+                                <label class="form-label"> Username</label>
+                                <input type="text" class="form-control" th:field="*{username}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label"> Password</label>
+                                <input type="text" class="form-control" th:field="*{password}" required>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Email</label>
-                                <input type="text" class="form-control" th:field="*{email}">
+                                <input type="text" class="form-control" th:field="*{email}" required>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label">First Name</label>
-                                <input type="text" class="form-control" th:field="*{firstName}">
+                                <label class="form-label">PhoneNumber</label>
+                                <input type="text" class="form-control" th:field="*{phone}" required>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label">Last Name</label>
-                                <input type="text" class="form-control" th:field="*{lastName}">
+                                <label class="form-label">Address</label>
+                                <input type="text" class="form-control" th:field="*{address}" required>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Date of Birth</label>
-                                <input type="date" class="form-control" th:field="*{birthDay}">
+                                <input type="date" class="form-label" th:field="*{birthDay}" required>
                             </div>
                             <button type="submit" class="btn btn-primary">Sign Up</button>
                         </form>
@@ -73,70 +74,12 @@
     </div>
 </div>
 
-<div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form action="/students/add" method="post" enctype="multipart/form-data">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5">Add New Student</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
 
-                    <div class="mb-3">
-                        <label  class="form-label">Student Name</label>
-                        <input type="text" class="form-control" name="studentName" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="product_image" class="form-label">Student Image</label>
-                        <img src="" alt="" id="preview" style="object-fit: cover; border-radius: 100%" width="100"
-                             height="100">
-                        <input type="file" id="product_image" class="form-control" name="file" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">PhoneNumber</label>
-                        <input type="text" class="form-control" name="phoneNumber" required>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Address</label>
-                        <input type="text" class="form-control" name="address" required>
-                    </div>
-                    <div class="mb-3">
-                        <label  class="form-label">Sex</label>
-                        <select class="form-label" name="sex">
-                            <option value="true">Nam</option>
-                            <option value="false">Nữ</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label  class="form-label">Date of Birth</label>
-                        <input type="date" class="form-label" name="birthday" required>
-                    </div>
-
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary" >ADD</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
 
 <script src="/js/app.js"></script>
 
 
-<script>
 
-    const  inputImage = document.getElementById("product_image");
-    const  inputPreview = document.getElementById("preview");
-    inputImage.addEventListener("change",function (e){
-        if (e.target.files.length) {
-            const src = URL.createObjectURL(e.target.files[0])
-            inputPreview.src = src;
-        }
-    })
-</script>
 
 
 </body>

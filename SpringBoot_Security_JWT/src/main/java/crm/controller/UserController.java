@@ -4,15 +4,14 @@ import com.lowagie.text.DocumentException;
 import crm.entity.User;
 import crm.service.UserService;
 import crm.utils.UserPDFExporter;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -43,10 +42,12 @@ public class UserController {
      * @return user/list
      */
     @GetMapping("/list")
-    public String showAllUsers(Model model, @AuthenticationPrincipal UserDetails currentUser) {
+    public String showAllUsers(@RequestParam(defaultValue = "") String name, Model model, @AuthenticationPrincipal UserDetails currentUser, Pageable pageable) {
         model.addAttribute("currentUser", userService.findByUsername(currentUser.getUsername()));
-            Iterable<User> users = userService.listAllUsers();
+            Page<User> users = userService.listAllUsersPage(pageable,name);
         model.addAttribute("users", users);
+        model.addAttribute("user", new User());
+        model.addAttribute("name", name);
         return "user/list";
     }
 
@@ -81,9 +82,15 @@ public class UserController {
         if (bindingResult.hasErrors()) {
             return "redirect:/user/edit/" + id;
         } else {
-            userService.editUser(user);
+            user.setId(id);
+            userService.updateUser(user);
             return "redirect:/user/list";
         }
+    }
+    @GetMapping("/detail/{id}")
+    public String details(@PathVariable Long id, Model model) {
+       model.addAttribute("user",userService.showUser(id));
+       return "user/details";
     }
 
     /**
@@ -96,7 +103,7 @@ public class UserController {
      */
     @GetMapping("/delete/{id}")
     public String deleteUser(@PathVariable Long id) {
-        userService.deleteUser(userService.showUser(id));
+        userService.deleteUser(id);
         return "redirect:/user/list";
     }
     @GetMapping("/download.pdf")

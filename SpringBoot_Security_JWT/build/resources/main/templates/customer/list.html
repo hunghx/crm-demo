@@ -20,6 +20,7 @@
           integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
 
     <link href="/css/app.css" rel="stylesheet">
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 
@@ -68,33 +69,8 @@
             <a class="sidebar-toggle js-sidebar-toggle mx-2">
                 <i class="hamburger align-self-center"></i>
             </a>
-            <div class="navbar-collapse collapse">
-                <ul class="navbar-nav navbar-align">
-                    <li class="nav-item dropdown">
-                        <a class="nav-icon dropdown-toggle d-inline-block d-sm-none" href="#" data-bs-toggle="dropdown">
-                            <i class="align-middle" data-feather="settings"></i>
-                        </a>
+            <div class="navbar-collapse collapse" th:replace="admin/index::navbar">
 
-                        <a class="nav-link dropdown-toggle d-none d-sm-inline-block" href="#" data-bs-toggle="dropdown">
-                            <img src="img/avatars/avatar.jpg" class="avatar img-fluid rounded me-1" alt="Charles Hall"/>
-                            <span class="text-dark" id="displayName">Chris Hung</span>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-end">
-                            <a class="dropdown-item" href="#"><i class="align-middle me-1"
-                                                                 data-feather="user"></i> Profile</a>
-                            <a class="dropdown-item" href="#"><i class="align-middle me-1" data-feather="pie-chart"></i>
-                                Analytics</a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="index.html"><i class="align-middle me-1"
-                                                                          data-feather="settings"></i> Settings &
-                                Privacy</a>
-                            <a class="dropdown-item" href="#"><i class="align-middle me-1"
-                                                                 data-feather="help-circle"></i> Help Center</a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#">Log out</a>
-                        </div>
-                    </li>
-                </ul>
             </div>
         </nav>
 
@@ -110,15 +86,16 @@
                                             data-bs-target="#addModal">+ Add New Customer
                                     </button>
                                 </a>
-                                <form class="d-flex" role="search">
+                                <form class="d-flex" th:action="@{/customer/list}" method="get">
                                     <input class="form-control me-2 fst-italic" type="search"
-                                           placeholder="Enter customer's name... "
+                                           placeholder="Enter customer's name... " th:value="${name}" name="name"
                                            aria-label="Search">
                                     <button class="btn btn-outline-success" type="submit">Search</button>
                                 </form>
                             </div>
                         </nav>
                     </div>
+
                     <!-- /.card-header -->
                     <div class="card-body">
                         <table id="example1" class="table table-bordered table-striped text-center">
@@ -128,26 +105,37 @@
                                 <th><a th:text="#{user.first.name}"></a></th>
                                 <th><a th:text="#{user.last.name}"></a></th>
                                 <th><a th:text="#{customer.email}"></a></th>
-                                <th><a th:text="#{customer.phone}"></a></th>
-                                <th><a th:text="#{customer.birthday}"></a></th>
+                                <th><a th:text="#{customer.status}"></a></th>
                                 <th colspan="3"><a th:text="#{table.action}"></a></th>
                             </tr>
                             </thead>
                             <tbody id="categories">
-                            <tr th:each="customer,loop : ${customers}">
+                            <tr th:each="customer,loop : ${customers.content}">
                                 <td th:text="${loop.count}"></td>
                                 <td th:text="${customer.firstName}"></td>
                                 <td th:text="${customer.lastName}"></td>
                                 <td th:text="${customer.email}"></td>
-                                <td th:text="${customer.address.phone}"></td>
-                                <td th:text="${customer.birthDay}"></td>
-                                <td><a th:href="@{|/customer/details/${customer.id}|}">Details</a></td>
-                                <td><a th:href="@{|/customer/edit/${customer.id}|}">Edit</a></td>
-                                <td><a th:href="@{|/customer/change-status/${customer.id}|}" th:text="${customer.enabled==1?'active':'inactive'}"></a></td>
+                                <td th:text="${customer.enabled==1?'Active':'Inactive'}"></td>
+                                <td><a class="btn-info btn" th:href="@{|/customer/details/${customer.id}|}">Details</a></td>
+                                <td><a class="btn btn-warning" th:href="@{|/customer/edit/${customer.id}|}">Edit</a></td>
+                                <td><a class="btn btn-secondary" th:href="@{|/customer/change-status/${customer.id}|}" th:text="${customer.enabled==1?'Hide':'Show'}"></a></td>
                             </tr>
                             </tbody>
                         </table>
                     </div>
+                    <nav aria-label="Page navigation example ">
+                        <ul class="pagination float-end mx-4">
+                            <li th:class="|page-item ${customers.hasPrevious()?'':'disabled'}|">
+                                <a th:unless="${customers.hasPrevious()}" class="page-link">Previous</a>
+                                <a th:if="${customers.hasPrevious()}" class="page-link" th:href="|?name=${name}&page=${customers.number+(-1)}|">Previous</a>
+                            </li>
+                            <li th:each="num,loop : ${#numbers.sequence(1,customers.getTotalPages())}" th:class="|page-item ${customers.number==loop.index?'active':''}|"><a class="page-link" th:text="${loop.count}" th:href="|?name=${name}&page=${loop.index}|">1</a></li>
+                            <li th:class="|page-item ${customers.hasNext()?'':'disabled'}|">
+                                <a th:unless="${customers.hasNext()}" class="page-link">Next</a>
+                                <a th:if="${customers.hasNext()}" class="page-link" th:href="|?name=${name}&page=${customers.number+1}|">Next</a>
+                            </li>
+                        </ul>
+                    </nav>
                 </div>
             </div>
         </main>
@@ -188,7 +176,7 @@
 <!-- Modal Add -->
 <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-        <form th:action="@{|/customer/add|}" th:object="${customer}" method="post">
+        <form th:action="@{/customer/add}" th:object="${customer}" method="post">
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="exampleModalLabel">Add New Customer</h1>
@@ -196,24 +184,24 @@
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label class="form-label"> Name:</label>
-                        <input type="text" class="form-control" th:field="*{name}" required>
+                        <label class="form-label"> First Name:</label>
+                        <input type="text" class="form-control" th:field="*{firstName}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label"> Last Name:</label>
+                        <input type="text" class="form-control" th:field="*{lastName}" required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label"> Email:</label>
                         <input type="email" class="form-control" th:field="*{email}" required>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label"> Phone:</label>
-                        <input type="text" class="form-control" th:field="*{phone}" required>
-                    </div>
-                    <div class="mb-3">
                         <label class="form-label"> Birthday:</label>
                         <input type="date" class="form-control" th:field="*{birthDay}" required>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label"> Description:</label>
-                        <textarea class="form-control" th:field="*{description}" required></textarea>
+                        <label class="form-label"> Phone:</label>
+                        <input type="text" class="form-control" th:field="*{phone}" required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label"> Address:</label>
@@ -223,50 +211,14 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">ADD
+                    <button type="submit" class="btn btn-primary" >ADD
                     </button>
                 </div>
             </div>
         </form>
     </div>
 </div>
-<!-- Modal Edit -->
-<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModal" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5">Edit Category</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form>
-                    <div class="mb-3">
-                        <label for="category_id" class="form-label">Category ID</label>
-                        <input type="text" class="form-control" id="category_id" disabled>
-                    </div>
-                    <div class="mb-3">
-                        <label for="category_name" class="form-label">Category Name</label>
-                        <input type="text" class="form-control" id="category_name_edit">
-                    </div>
-                    <div class="mb-3">
-                        <label for="description" class="form-label">Descriptions</label>
-                        <textarea class="form-control" id="description_edit" rows="3"></textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label for="createdDate" class="form-label">CreatedDate</label>
-                        <input type="text" class="form-control" id="createdDate" readonly>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="updateCategory()">
-                    UPDATE
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
+
 <script src="/js/app.js"></script>
 </body>
 

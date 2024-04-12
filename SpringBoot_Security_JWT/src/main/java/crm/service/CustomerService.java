@@ -1,6 +1,8 @@
 package crm.service;
 
 import crm.entity.Customer;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.Set;
 
@@ -18,8 +20,9 @@ public interface CustomerService {
     Long getMaxId();
 
     Iterable<Customer> listAllCustomers();
+    Page<Customer> listAllCustomersWithPage(String name,Pageable  pageable) ;
 
-    Customer showCustomer(Long id);
+    Customer showCustomer(Integer id);
 
     Iterable<Customer> findAllByEnabledTrue();
     Iterable<Customer> findAllByEnabledFalse();
@@ -41,7 +44,7 @@ public interface CustomerService {
 
 
 
-    void changeStatus(Long id);
+    void changeStatus(Integer id);
     void saveCustomer(Customer customer);
 //
 //    void editCustomer(Customer customer);

@@ -77,39 +77,45 @@
             <div class="container-fluid p-0">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Edit Customer Information</h3>
+                        <h3 class="card-title">User Information</h3>
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body">
-                        <form th:action="@{|/customer/edit/${customer.id}|}" th:object="${customer}" method="post">
-                            <div class="mb-3">
-                                <label class="form-label"> First Name:</label>
-                                <input type="text" class="form-control" th:field="*{firstName}" required>
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-6 p-2">
+                                    <span class="fw-bold">Fullname :</span>
+                                    <span th:text="${user.fullName}"></span>
+                                </div>
+                                <div class="col-6 p-2">
+                                    <span class="fw-bold"> Username : </span>
+                                    <span th:text="${user.username}"></span>
+                                </div>
+                                <div class="col-6 p-2">
+                                    <span class="fw-bold"> Email : </span>
+                                    <span th:text="${user.email}"></span>
+                                </div>
+                                <div class="col-6 p-2">
+                                    <span class="fw-bold"> Phone : </span>
+                                    <span th:text="${user.phone}"></span>
+                                </div>
+                                <div class="col-6 p-2">
+                                    <span class="fw-bold"> Sex : </span>
+                                    <span th:text="${user.sex?'Nam':'Nữ'}"></span>
+                                </div>
+                                <div class="col-6 p-2">
+                                    <span class="fw-bold"> Address : </span>
+                                    <span th:text="${user.address}"></span>
+                                </div>
+                                <div class="col-6 p-2">
+                                    <span class="fw-bold"> Birthday : </span>
+                                    <span th:text="${user.birthDay}"></span>
+                                </div>
+                                <div class="col-12 text-center">
+                                    <a class="btn btn-info" href="/user/list">Back</a>
+                                </div>
                             </div>
-                            <div class="mb-3">
-                                <label class="form-label"> Last Name:</label>
-                                <input type="text" class="form-control" th:field="*{lastName}" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label"> Email:</label>
-                                <input type="email" class="form-control" th:field="*{email}" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label"> Birthday:</label>
-                                <input type="date" class="form-control" th:field="*{birthDay}" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label"> Phone:</label>
-                                <input type="text" class="form-control" th:field="*{phone}" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label"> Address:</label>
-                                <input type="text" class="form-control" th:field="*{address}" required>
-                            </div>
-                            <div class="mb-3 text-center">
-                                <input type="submit" class="btn btn-info" value="Update">
-                            </div>
-                        </form>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -150,4 +156,3 @@
 </body>
 
 </html>
-

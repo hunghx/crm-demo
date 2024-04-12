@@ -5,6 +5,9 @@ import crm.entity.User;
 import crm.repository.RoleRepository;
 import crm.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -57,6 +60,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Page<User> listAllUsersPage(Pageable pageable, String name) {
+        Pageable pageableCustom = PageRequest.of(pageable.getPageNumber(), 10);
+        return userRepository.findByEnabledAndFullNameContaining(1, name, pageableCustom);
+    }
+
+    @Override
     public User showUser(Long id) {
         return userRepository.getById(id);
     }
@@ -82,6 +91,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void saveUserAdmin(User user) {
+        user.setEnabled(1);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        userRepository.save(user);
+    }
+
+    @Override
     public void editUser(User user) {
         String password = user.getPassword();
         user.setPassword(passwordEncoder.encode(password));
@@ -98,7 +114,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(User user) {
+    public void updateUser(User user) {
+        User old = userRepository.findById(user.getId()).orElseThrow(() -> new RuntimeException("error"));
+        user.setPassword(old.getPassword());
+        user.setEnabled(1);
+        if (old.getRole().getName().equals("ROLE_USER")){
+            user.setRole(old.getRole());
+        }
+        userRepository.save(user);
+
+    }
+
+    @Override
+    public void deleteUser(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("ko ton tai id"));
         user.setEnabled(0);
         user.setPassword(null);
         userRepository.save(user);

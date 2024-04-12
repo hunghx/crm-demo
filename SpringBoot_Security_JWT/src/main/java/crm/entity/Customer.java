@@ -40,9 +40,13 @@ public class Customer {
     private int enabled;
     @Column(name = "create_at")
     private LocalDateTime createAt;
+    private String phone;
     @Column(name = "last_update")
     private LocalDateTime lastUpdate;
-    @ManyToOne
-    @JoinColumn(name = "address_id")
-    private Address address;
+    @Column(name = "address")
+    private String address;
+
+    public String getName(){
+        return firstName+" "+lastName;
+    }
 }

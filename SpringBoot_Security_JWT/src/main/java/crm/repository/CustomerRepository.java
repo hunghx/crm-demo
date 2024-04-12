@@ -1,6 +1,8 @@
 package crm.repository;
 
 import crm.entity.Customer;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -19,10 +21,11 @@ import java.util.Set;
  */
 
 @Repository
-public interface CustomerRepository extends JpaRepository<Customer, Long> {
+public interface CustomerRepository extends JpaRepository<Customer, Integer> {
 
     @Query(value = "select max(id) from crm.customer", nativeQuery = true)
     Long getMaxId();
+    Page<Customer> findByFirstNameContainingOrLastNameContaining(String name,String last, Pageable pageable);
 
     Iterable<Customer> findAllByEnabled(int enabled);
 
@@ -34,11 +37,11 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
     Iterable<Customer> findByEmail(String email);
 
-    @Query("from Customer where address.phone like :phone and enabled = :enable")
+    @Query("from Customer where phone like :phone and enabled = :enable")
     @Modifying
     Iterable<Customer> findByEnabledAndPhone(@Param("enable") int enabled, @Param("phone") String phone);
 
-    @Query("from Customer where address.phone like :phone")
+    @Query("from Customer where phone like :phone")
     @Modifying
     Iterable<Customer> findByPhone(@Param("phone") String phone);
 
