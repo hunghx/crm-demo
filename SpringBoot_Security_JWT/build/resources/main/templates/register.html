@@ -1,0 +1,144 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Responsive Admin &amp; Dashboard Template based on Bootstrap 5">
+    <meta name="author" content="AdminKit">
+    <meta name="keywords"
+          content="adminkit, bootstrap, bootstrap 5, admin, dashboard, template, responsive, css, sass, html, theme, front-end, ui kit, web">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="shortcut icon" href="/img/icons/icon-48x48.png"/>
+
+    <link rel="canonical" href="https://demo-basic.adminkit.io/"/>
+
+    <title>AdminKit Demo - Bootstrap 5 Admin Template</title>
+
+    <link href="/css/app.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/4.2.0/firebase.js"></script>
+</head>
+
+<body>
+<div class="wrapper">
+    <div class="main px-6">
+        <main class="content mx-5">
+            <div class="container-fluid px-5 pt-2" style="max-width: 50vw">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="text-xl-center fs-2 text-black">Register</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body p-6">
+                        <form th:action="@{/register}" th:object="${user}" method="post">
+                            <input type="hidden" th:field="*{id}" />
+                            <div class="mb-3">
+                                <label class="form-label">Username</label>
+                                <input type="text" class="form-control" th:field="*{username}">
+                                <p class="text-danger" th:if="${alreadyRegisteredMessage}" th:text="${alreadyRegisteredMessage}"></p>
+                            </div>
+                            <div class="mb-3">
+                                <label  class="form-label">Password</label>
+                                <input type="password" class="form-control" th:field="*{password}">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Email</label>
+                                <input type="text" class="form-control" th:field="*{email}">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">First Name</label>
+                                <input type="text" class="form-control" th:field="*{firstName}">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Last Name</label>
+                                <input type="text" class="form-control" th:field="*{lastName}">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Date of Birth</label>
+                                <input type="date" class="form-control" th:field="*{birthDay}">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Sign Up</button>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="/students/add" method="post" enctype="multipart/form-data">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">Add New Student</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="mb-3">
+                        <label  class="form-label">Student Name</label>
+                        <input type="text" class="form-control" name="studentName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="product_image" class="form-label">Student Image</label>
+                        <img src="" alt="" id="preview" style="object-fit: cover; border-radius: 100%" width="100"
+                             height="100">
+                        <input type="file" id="product_image" class="form-control" name="file" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">PhoneNumber</label>
+                        <input type="text" class="form-control" name="phoneNumber" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Address</label>
+                        <input type="text" class="form-control" name="address" required>
+                    </div>
+                    <div class="mb-3">
+                        <label  class="form-label">Sex</label>
+                        <select class="form-label" name="sex">
+                            <option value="true">Nam</option>
+                            <option value="false">Nữ</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label  class="form-label">Date of Birth</label>
+                        <input type="date" class="form-label" name="birthday" required>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" >ADD</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="/js/app.js"></script>
+
+
+<script>
+
+    const  inputImage = document.getElementById("product_image");
+    const  inputPreview = document.getElementById("preview");
+    inputImage.addEventListener("change",function (e){
+        if (e.target.files.length) {
+            const src = URL.createObjectURL(e.target.files[0])
+            inputPreview.src = src;
+        }
+    })
+</script>
+
+
+</body>
+
+</html>
