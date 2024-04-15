@@ -43,8 +43,8 @@
                         <i class="align-middle" data-feather="grid"></i> <span class="align-middle">Dashboard</span>
                     </a>
                 </li>
-                <li class="sidebar-item active">
-                    <a class="sidebar-link" href="#">
+                <li class="sidebar-item">
+                    <a class="sidebar-link" href="user/list">
                         <i class="align-middle" data-feather="grid"></i> <span class="align-middle">User</span>
                     </a>
                 </li>
@@ -53,24 +53,9 @@
                         <i class="align-middle" data-feather="square"></i> <span class="align-middle">Customer</span>
                     </a>
                 </li>
-                <li class="sidebar-item">
-                    <a class="sidebar-link" href="/contract/list">
+                <li class="sidebar-item active">
+                    <a class="sidebar-link" href="#">
                         <i class="align-middle" data-feather="user"></i> <span class="align-middle">Contract</span>
-                    </a>
-                </li>
-                <li class="sidebar-item">
-                    <a class="sidebar-link" href="/user/list">
-                        <i class="align-middle" data-feather="square"></i> <span class="align-middle">Activity</span>
-                    </a>
-                </li>
-                <li class="sidebar-item">
-                    <a class="sidebar-link" href="/customer/list">
-                        <i class="align-middle" data-feather="user"></i> <span class="align-middle">Transaction</span>
-                    </a>
-                </li>
-                <li class="sidebar-item">
-                    <a class="sidebar-link" href="/customer/list">
-                        <i class="align-middle" data-feather="user"></i> <span class="align-middle">Project</span>
                     </a>
                 </li>
 
@@ -92,39 +77,46 @@
             <div class="container-fluid p-0">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Edit Customer Information</h3>
+                        <h3 class="card-title">Contract Information</h3>
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body">
-                        <form th:action="@{|/customer/edit/${customer.id}|}" th:object="${customer}" method="post">
-                            <div class="mb-3">
-                                <label class="form-label"> First Name:</label>
-                                <input type="text" class="form-control" th:field="*{firstName}" required>
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-6 p-2">
+                                    <span class="fw-bold">Contract ID :</span>
+                                    <span th:text="${contract.id}"></span>
+                                </div>
+                                <div class="col-6 p-2">
+                                    <span class="fw-bold"> Contract Name : </span>
+                                    <span th:text="${contract.name}"></span>
+                                </div>
+                                <div class="col-12 p-2">
+                                    <span class="fw-bold"> Content : </span>
+                                    <span th:text="${contract.content}"></span>
+                                </div>
+                                <div class="col-6 p-2">
+                                    <span class="fw-bold"> Begin At : </span>
+                                    <span th:text="${contract.beginDate}"></span>
+                                </div>
+                                <div class="col-6 p-2">
+                                    <span class="fw-bold"> Expiry At : </span>
+                                    <span th:text="${contract.endDate}"></span>
+                                </div><div class="col-6 p-2">
+                                    <span class="fw-bold"> Value : </span>
+                                    <span th:text="${contract.value}"></span>
+                                </div><div class="col-6 p-2">
+                                    <span class="fw-bold"> Customer name : </span>
+                                    <span th:text="${contract.customer.getName()}"></span>
+                                </div><div class="col-6 p-2">
+                                    <span class="fw-bold"> Employee : </span>
+                                    <span th:text="${contract.user.fullName}"></span>
+                                </div>
+                                <div class="col-12 text-center">
+                                    <a class="btn btn-info" href="/contract/list">Back</a>
+                                </div>
                             </div>
-                            <div class="mb-3">
-                                <label class="form-label"> Last Name:</label>
-                                <input type="text" class="form-control" th:field="*{lastName}" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label"> Email:</label>
-                                <input type="email" class="form-control" th:field="*{email}" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label"> Birthday:</label>
-                                <input type="date" class="form-control" th:field="*{birthDay}" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label"> Phone:</label>
-                                <input type="text" class="form-control" th:field="*{phone}" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label"> Address:</label>
-                                <input type="text" class="form-control" th:field="*{address}" required>
-                            </div>
-                            <div class="mb-3 text-center">
-                                <input type="submit" class="btn btn-info" value="Update">
-                            </div>
-                        </form>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -165,4 +157,3 @@
 </body>
 
 </html>
-

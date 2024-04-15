@@ -59,7 +59,21 @@
                         <i class="align-middle" data-feather="grid"></i> <span class="align-middle">Contract</span>
                     </a>
                 </li>
-
+                <li class="sidebar-item">
+                    <a class="sidebar-link" href="/user/list">
+                        <i class="align-middle" data-feather="square"></i> <span class="align-middle">Activity</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link" href="/customer/list">
+                        <i class="align-middle" data-feather="user"></i> <span class="align-middle">Transaction</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link" href="/customer/list">
+                        <i class="align-middle" data-feather="user"></i> <span class="align-middle">Project</span>
+                    </a>
+                </li>
 
             </ul>
         </div>
@@ -70,33 +84,8 @@
             <a class="sidebar-toggle js-sidebar-toggle mx-2">
                 <i class="hamburger align-self-center"></i>
             </a>
-            <div class="navbar-collapse collapse">
-                <ul class="navbar-nav navbar-align">
-                    <li class="nav-item dropdown">
-                        <a class="nav-icon dropdown-toggle d-inline-block d-sm-none" href="#" data-bs-toggle="dropdown">
-                            <i class="align-middle" data-feather="settings"></i>
-                        </a>
+            <div class="navbar-collapse collapse" th:replace="admin/index::navbar">
 
-                        <a class="nav-link dropdown-toggle d-none d-sm-inline-block" href="#" data-bs-toggle="dropdown">
-                            <img src="img/avatars/avatar.jpg" class="avatar img-fluid rounded me-1" alt="Charles Hall"/>
-                            <span class="text-dark" id="displayName">Chris Hung</span>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-end">
-                            <a class="dropdown-item" href="#"><i class="align-middle me-1"
-                                                                 data-feather="user"></i> Profile</a>
-                            <a class="dropdown-item" href="#"><i class="align-middle me-1" data-feather="pie-chart"></i>
-                                Analytics</a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="index.html"><i class="align-middle me-1"
-                                                                          data-feather="settings"></i> Settings &
-                                Privacy</a>
-                            <a class="dropdown-item" href="#"><i class="align-middle me-1"
-                                                                 data-feather="help-circle"></i> Help Center</a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#">Log out</a>
-                        </div>
-                    </li>
-                </ul>
             </div>
         </nav>
 
@@ -112,9 +101,9 @@
                                             data-bs-target="#addModal">+ Add New Contract
                                     </button>
                                 </a>
-                                <form class="d-flex" role="search">
+                                <form class="d-flex" th:action="@{/contract/list}">
                                     <input class="form-control me-2 fst-italic" type="search"
-                                           placeholder="Enter contract's name... "
+                                           placeholder="Enter contract's name... " th:value="${name}" name="name"
                                            aria-label="Search">
                                     <button class="btn btn-outline-success" type="submit">Search</button>
                                 </form>
@@ -136,11 +125,10 @@
                                 <th><a th:text="#{crm.customer.name}"></a></th>
                                 <th><a th:text="#{user.name}"></a></th>
                                 <th><a th:text="#{table.action}"></a></th>
-                                <th></th>
                             </tr>
                             </thead>
                             <tbody >
-                            <tr th:each="contract,loop : ${contracts}">
+                            <tr th:each="contract,loop : ${contracts.content}">
                                 <td th:text="${loop.count}"></td>
                                 <td th:text="${contract.name}"></td>
                                 <td th:text="${contract.content}"></td>
@@ -157,6 +145,19 @@
                             </tbody>
                         </table>
                     </div>
+                    <nav aria-label="Page navigation example ">
+                        <ul class="pagination float-end mx-4">
+                            <li th:class="|page-item ${contracts.hasPrevious()?'':'disabled'}|">
+                                <a th:unless="${contracts.hasPrevious()}" class="page-link">Previous</a>
+                                <a th:if="${contracts.hasPrevious()}" class="page-link" th:href="|?name=${name}&page=${contracts.number+(-1)}|">Previous</a>
+                            </li>
+                            <li th:each="num,loop : ${#numbers.sequence(1,contracts.getTotalPages())}" th:class="|page-item ${contracts.number==loop.index?'active':''}|"><a class="page-link" th:text="${loop.count}" th:href="|?name=${name}&page=${loop.index}|">1</a></li>
+                            <li th:class="|page-item ${contracts.hasNext()?'':'disabled'}|">
+                                <a th:unless="${contracts.hasNext()}" class="page-link">Next</a>
+                                <a th:if="${contracts.hasNext()}" class="page-link" th:href="|?name=${name}&page=${contracts.number+1}|">Next</a>
+                            </li>
+                        </ul>
+                    </nav>
                 </div>
             </div>
         </main>
@@ -210,7 +211,7 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label"> Content: </label>
-                        <input type="email" class="form-control" th:field="*{content}" required>
+                        <input type="text" class="form-control" th:field="*{content}" required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label"> Value: </label>
@@ -247,43 +248,7 @@
         </form>
     </div>
 </div>
-<!--&lt;!&ndash; Modal Edit &ndash;&gt;-->
-<!--<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModal" aria-hidden="true">-->
-<!--    <div class="modal-dialog">-->
-<!--        <div class="modal-content">-->
-<!--            <div class="modal-header">-->
-<!--                <h1 class="modal-title fs-5">Edit Category</h1>-->
-<!--                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>-->
-<!--            </div>-->
-<!--            <div class="modal-body">-->
-<!--                <form>-->
-<!--                    <div class="mb-3">-->
-<!--                        <label for="category_id" class="form-label">Category ID</label>-->
-<!--                        <input type="text" class="form-control" id="category_id" disabled>-->
-<!--                    </div>-->
-<!--                    <div class="mb-3">-->
-<!--                        <label for="category_name" class="form-label">Category Name</label>-->
-<!--                        <input type="text" class="form-control" id="category_name_edit">-->
-<!--                    </div>-->
-<!--                    <div class="mb-3">-->
-<!--                        <label for="description" class="form-label">Descriptions</label>-->
-<!--                        <textarea class="form-control" id="description_edit" rows="3"></textarea>-->
-<!--                    </div>-->
-<!--                    <div class="mb-3">-->
-<!--                        <label for="createdDate" class="form-label">CreatedDate</label>-->
-<!--                        <input type="text" class="form-control" id="createdDate" readonly>-->
-<!--                    </div>-->
-<!--                </form>-->
-<!--            </div>-->
-<!--            <div class="modal-footer">-->
-<!--                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>-->
-<!--                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="updateCategory()">-->
-<!--                    UPDATE-->
-<!--                </button>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--</div>-->
+
 <script src="/js/app.js"></script>
 </body>
 

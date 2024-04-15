@@ -6,6 +6,7 @@ import crm.entity.User;
 import crm.service.ContractService;
 import crm.service.CustomerService;
 import crm.service.UserService;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -38,11 +39,12 @@ public class ContractController {
      * @return contract/list
      */
     @GetMapping("/list")
-    public String showAllContracts(Model model) {
+    public String showAllContracts(@RequestParam(defaultValue = "") String name, Model model, Pageable pageable) {
         model.addAttribute("contract", new Contract());
         model.addAttribute("users",userService.listAllUsers());
         model.addAttribute("customers",customerService.listAllCustomers());
-        model.addAttribute("contracts", contractService.listAllContracts());
+        model.addAttribute("name",name);
+        model.addAttribute("contracts", contractService.listAllContracts(name,pageable));
         return "contract/list";
     }
 
@@ -94,6 +96,8 @@ public class ContractController {
      */
     @GetMapping("/edit/{id}")
     public String showFormEditContract(Model model, @PathVariable Long id) {
+        model.addAttribute("users",userService.listAllUsers());
+        model.addAttribute("customers",customerService.listAllCustomers());
         model.addAttribute("contract", contractService.showContract(id));
         return "contract/edit";
     }
@@ -117,6 +121,11 @@ public class ContractController {
             contractService.saveContract(contract);
             return "redirect:/contract/list";
         }
+    }
+    @GetMapping("/details/{id}")
+    public String details(@PathVariable Long id, Model model) {
+        model.addAttribute("contract",contractService.showContract(id));
+        return "contract/details";
     }
 
 

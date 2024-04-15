@@ -7,6 +7,9 @@ import crm.entity.User;
 import crm.repository.ContractRepository;
 import crm.repository.CustomerRepository;
 import crm.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -23,6 +26,12 @@ public class ContractServiceImpl implements ContractService {
         this.contractRepository = contractRepository;
         this.customerRepository = customerRepository;
         this.userRepository = userRepository;
+    }
+
+    @Override
+    public Page<Contract> listAllContracts(String name, Pageable pageable) {
+        Pageable pageableCustom= PageRequest.of(pageable.getPageNumber(), 10);
+        return contractRepository.findByNameContainingOrContentContaining(name,name,pageableCustom);
     }
 
     @Override

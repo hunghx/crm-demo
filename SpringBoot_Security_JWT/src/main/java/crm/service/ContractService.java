@@ -4,6 +4,8 @@ import crm.entity.Contract;
 import crm.entity.Customer;
 import crm.entity.Status;
 import crm.entity.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -13,6 +15,7 @@ public interface ContractService {
     Contract findByName(String contractName);
 
     Iterable<Contract> listAllContracts();
+    Page<Contract> listAllContracts(String name,Pageable pageable);
 
     Contract showContract(Long id);
 

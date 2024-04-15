@@ -4,6 +4,8 @@ import crm.entity.Contract;
 import crm.entity.Customer;
 import crm.entity.Status;
 import crm.entity.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,6 +16,7 @@ import java.time.LocalDate;
 public interface ContractRepository extends JpaRepository<Contract, Long> {
 
     Contract findByName(String contractName);
+    Page<Contract> findByNameContainingOrContentContaining(String name , String content, Pageable pageable);
 
     Iterable<Contract> findAllByValueLessThanEqual(BigDecimal value);
 
